@@ -69,3 +69,6 @@ def 정보(**kwargs):
     for k, v in kwargs.items():
         print(f"{k} : {v}")
 정보(name="철수",age=20, city="부산")
+
+
+## 4. 기본값이 존재하는
