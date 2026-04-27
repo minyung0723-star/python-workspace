@@ -7,10 +7,10 @@ pygame.display.set_caption("런닝기사")
 시계 = pygame.time.Clock()
 
 # 이미지 불러오기
-배경 = pygame.transform.scale(pygame.image.load("background.png").convert(),(800, 600))
-땅이미지 = pygame.transform.scale(pygame.image.load("ground.png").convert_alpha(),(800, 120))
-플레이어이미지 = pygame.transform.scale(pygame.image.load("player.png").convert_alpha(),(70, 70))
-장애물이미지 = pygame.transform.scale(pygame.image.load("obstacle.png").convert_alpha(),(60, 60))
+배경 = pygame.transform.scale(pygame.image.load("images/running/background.png").convert(), (800, 600))
+땅이미지 = pygame.transform.scale(pygame.image.load("images/running/ground.png").convert_alpha(), (800, 120))
+플레이어이미지 = pygame.transform.scale(pygame.image.load("images/running/player.png").convert_alpha(), (70, 70))
+장애물이미지 = pygame.transform.scale(pygame.image.load("images/running/obstacle.png").convert_alpha(), (60, 60))
 
 폰트 = pygame.font.SysFont("malgungothic", 36)
 
