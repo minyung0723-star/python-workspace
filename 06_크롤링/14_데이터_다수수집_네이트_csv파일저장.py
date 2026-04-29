@@ -2,6 +2,7 @@ import requests
 import newspaper
 from bs4 import BeautifulSoup
 import time
+import pandas as pd
 
 # 봇 차단 우회
 headers = {
@@ -88,7 +89,7 @@ def 기사수집(url):
 
 def 뉴스20개수집():
     url목록 = url목록가져오기()
-
+    수집결과 = []
     if not url목록:
         print("URL 수집 실패. 종료합니다.")
         return
@@ -103,9 +104,10 @@ def 뉴스20개수집():
         print("기자(언론사) :", 기자)
         print("날짜 :", 날짜)
         print("내용 :", 내용)
-
+        수집결과.append(dict(제목=제목, 기자=기자, 날짜=날짜, 내용=내용))
         time.sleep(2)  # 서버 차단 방지
-
+    df = pd.DataFrame(수집결과)
+    df.to_csv("네이트_뉴스수집.csv", index=False, encoding="utf-8-sig")
     print("\n수집 완료")
 
 
