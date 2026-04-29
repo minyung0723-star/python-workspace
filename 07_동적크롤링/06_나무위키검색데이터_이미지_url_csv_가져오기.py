@@ -32,7 +32,7 @@ for 검색 in 검색어목록:
 
 browser.close()
 
-# TODO : pandas DataFrame 에 결과리스트를 컬럼명칭 = 검색어 제목 이미지경로 로 지정해서 틀 세팅
+
 df = pd.DataFrame(결과리스트, columns=["검색","제목","이미지URL"])
-# TODO : 세팅된 틀과 데이터를 to_CSV 이용해서 저장 나무위키_이미지데이터.csv 순번없이 한글깨짐 방지
+
 df.to_csv('나무위키_이미지데이터.csv', index=False, encoding="utf-8-sig")
