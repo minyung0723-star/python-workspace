@@ -33,7 +33,7 @@ p.stop()
 
 df = pd.DataFrame(결과리스트, columns=["영화명","페이지제목","본문"])
 
-df.to_csv("네이버_영화검색결과.csv", index=False, encoding="cp949")
+df.to_csv("네이버_영화검색결과.csv", index=False, encoding="utf-8-sig")
 print("저장 완료")
 
 
@@ -54,9 +54,9 @@ data = {
 }
 
 df = pd.DataFrame(data)
-df.to_csv("영화평점.csv", index=False, encoding="cp949")
+df.to_csv("영화평점.csv", index=False, encoding="utf-8-sig")
 
-df = pd.read_csv("영화평점.csv", encoding="cp949")
+df = pd.read_csv("영화평점.csv", encoding="utf-8")
 
 plt.bar(df['영화명'], df['실관람객평점'])
 plt.title("영화별 실관람객 평점")
