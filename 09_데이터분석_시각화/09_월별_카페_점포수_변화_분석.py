@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-df = pd.read_csv("소상공인시장진흥공단_전국 카페 점포수_11_04_2019.csv", encoding="cp949")
+df = pd.read_csv("소상공인시장진흥공단_전국_카페_점포수_11_04_2019.csv", encoding="cp949")
 업소수 = np.array(df["업소수"])
 
 plt.rcParams['font.family'] = 'Malgun Gothic'

@@ -12,7 +12,7 @@ matplotlib.rcParams['font.family'] = 'D2Coding'
 # matplotlib.rcParams['font.family'] = 'AppleGothic' # 맥북에는 맑은 고딕 대신 애플고딕 존재
 matplotlib.rcParams['axes.unicode_minus'] = False
 # STEP 1 - Pandas 파일 불러오기
-df = pd.read_csv('한국사회보장정보원_복지사업 월별 급여지급 현황_20241231.csv', encoding='cp949')
+df = pd.read_csv('한국사회보장정보원_복지사업_월별_급여지급_현황_20241231.csv', encoding='cp949')
 
 # STEP 2 - Pandas 불러온 파일 기본정보 파악
 def step2():

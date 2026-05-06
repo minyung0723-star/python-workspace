@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-df = pd.read_csv("한국문화정보원_공공저작물_우수저작물 목록(문서)_20210811.csv", encoding="cp949")
+df = pd.read_csv("한국문화정보원_공공저작물_우수저작물_목록(문서)_20210811.csv", encoding="cp949")
 조회수 = np.array(df["우수저작물 조회수"])
 
 def 배열_연산():
