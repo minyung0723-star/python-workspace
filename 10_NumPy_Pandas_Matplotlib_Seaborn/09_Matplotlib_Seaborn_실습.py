@@ -156,3 +156,4 @@ def matplotlib문제2():
 
     plt.tight_layout()
     plt.show()
+matplotlib문제2()
