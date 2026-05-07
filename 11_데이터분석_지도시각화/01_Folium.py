@@ -147,6 +147,9 @@ def folium_excel_클러스터링():
         folium.Marker(
             location=[row["위도"], row["경도"]]
         ).add_to(cluster) # m 이 아닌 클러스터에 추가
+        # ).add_to(MarkerCluster().add_to(m))
+        # 위도 경도를 마커가 너무 많으면 동그라미 표기해주는 곳에 세팅할 거고
+        # 동그라미 표기법은 folium 에서 제공하는 지도 형태를 따를 것이다.
     m.save("따릉이지도.html")
 
 folium_excel_클러스터링()
