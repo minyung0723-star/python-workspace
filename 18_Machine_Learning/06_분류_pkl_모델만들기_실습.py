@@ -21,6 +21,7 @@ def 참고용코드():
         pickle.dump(model, f)
 
     print("모델 저장 완료")
+참고용코드()
 
 def 실습_1():
     wine = load_wine()
@@ -36,7 +37,7 @@ def 실습_1():
     acc = accuracy_score(y_test, y_pred)
     with open(f"wine_model{acc * 100:.1f}.pkl", "wb") as f:
         pickle.dump(model, f)
-실습_1()
+# 실습_1()
 
 def 실습_2():
     digits = load_digits()
@@ -52,7 +53,7 @@ def 실습_2():
     acc = accuracy_score(y_test, y_pred)
     with open(f"digits_model{acc * 100:.1f}.pkl", "wb") as f:
         pickle.dump(model, f)
-실습_2()
+# 실습_2()
 
 def 실습_3():
     cancer = load_breast_cancer()
@@ -68,5 +69,5 @@ def 실습_3():
     acc = accuracy_score(y_test, y_pred)
     with open(f"cancer_model{acc * 100:.1f}.pkl", "wb") as f:
         pickle.dump(model, f)
-실습_3()
+# 실습_3()
 # def 실습_4():
