@@ -11,6 +11,7 @@ Fake News 가짜 뉴스 분류 데이터 셋
 """
 
 import pandas as pd
+import requests
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
@@ -135,3 +136,147 @@ def csv_영화리뷰():
     result = model.predict(my_vec)
     print(f"리뷰1 예측: {result[0]}")  # → positive
     print(f"리뷰2 예측: {result[1]}")  # → negative
+
+
+def API_CSV_데이터수집():
+    """
+    데이터를 인터넷에서 수집하고 수집한 데이터를 csv 로 저장한다.
+    데이터 수집에서 사용하는 사이트
+    omdbapi.com
+    api key free 발급 받아 사용 가능
+    하루 1000번 무료 호출 가능
+    """
+
+
+# ==========================
+# 1. API key setting
+# ==========================
+API_KEY = '6fae13d2'
+영화목록 = ["Inception", "Titanic"]
+data = []
+
+def get_movie(title):
+    #      http://www.omdbapi.com/?t=Avatar
+    url = f"http://www.omdbapi.com/?t={title}&apikey={API_KEY}"
+    """
+    {"Title":"Avatar",
+    "Year":"2009",
+    "Rated":"PG-13",
+    "Released":"18 Dec 2009",
+    "Runtime":"162 min",
+    "Genre":"Action, Adventure, Fantasy",
+    "Director":"James Cameron",
+    "Writer":"James Cameron",
+    "Actors":"Sam Worthington, Zoe Saldaña, Sigourney Weaver",
+    "Plot":"A paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.",
+    "Language":"English, Spanish",
+    "Country":"United States, United Kingdom",
+    "Awards":"Won 3 Oscars. 91 wins & 131 nominations total",
+    "Poster":"https://m.media-amazon.com/images/M/MV5BMDEzMmQwZjctZWU2My00MWNlLWE0NjItMDJlYTRlNGJiZjcyXkEyXkFqcGc@._V1_SX300.jpg",
+    "Ratings":[{"Source":"Internet Movie Database","Value":"7.9/10"},{"Source":"Rotten Tomatoes","Value":"81%"},{"Source":"Metacritic","Value":"83/100"}],
+    "Metascore":"83",
+    "imdbRating":"7.9",
+    "imdbVotes":"1,486,308",
+    "imdbID":"tt0499549",
+    "Type":"movie",
+    "DVD":"N/A",
+    "BoxOffice":"$785,221,649",
+    "Production":"N/A",
+    "Website":"N/A",
+    "Response":"True"}
+    
+    """
+    response = requests.get(url)
+    return response.json()  # omdbapi 접속해서 해당 제목의 영화 데이터 영화데이터 접근 권한 = api key  이용해서
+    #  json 데이터 갖고오기
+
+
+
+def csv_저장하기():
+    for 제목 in 영화목록:
+        영화사이트_데이터 = get_movie(제목)  # 위에서 만들어준 get_movie 기능에 제목을 하나씩 전달하여 검색하기 기능
+
+        if 영화사이트_데이터.get("Response") == "True":
+            data.append({
+                "title": 영화사이트_데이터.get("Title"),
+                "year": 영화사이트_데이터.get("Year"),
+                "genre": 영화사이트_데이터.get("Genre"),
+                "plot": 영화사이트_데이터.get("Plot"),
+                "rating": 영화사이트_데이터.get("imdbRating"),
+                "awards": 영화사이트_데이터.get("Awards"),
+            })
+            print(f"수집완료 : {제목}")
+
+    df = pd.DataFrame(data)
+    df.to_csv("csvs/omdb_movies.csv", index=False, encoding="utf-8-sig")
+    print(f"\n 총 {len(df)}개 저장완료")
+    print(df.head())
+
+
+def 라벨만들기(df):
+    df['label'] = df['rating'].astype(float).apply(
+        lambda x: 'good' if x >= 8.0 else 'bad'
+    )
+    print(df[['title', 'rating', 'label']])
+    return df
+
+
+# ================================
+# csv_불러오기()
+# df['컬럼이름']
+# ================================
+def csv_불러오기():
+    df = pd.read_csv("csvs/omdb_movies.csv")
+    print('상위 5개 데이터 확인 : ', df.head())
+    print('특정 컬럼 조회 : ', df['rating'])
+    return df
+
+
+# ================================
+# 나이브 베이즈 학습
+# ================================
+def 나이브베이즈_학습(df):
+    X = df['plot']
+    y = df['label']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    vectorizer = CountVectorizer()
+    X_train_vec = vectorizer.fit_transform(X_train)
+    X_test_vec = vectorizer.transform(X_test)
+
+    model = MultinomialNB()
+    model.fit(X_train_vec, y_train)
+
+    print(f"정확도: {model.score(X_test_vec, y_test):.4f}")
+    return model, vectorizer
+
+
+# ================================
+# 직접 예측
+# ================================
+def 직접예측(model, vectorizer):
+    my_plots = [
+        "A thief who enters dreams to steal secrets",
+        "A boring love story with no action or excitement",
+    ]
+    my_vec = vectorizer.transform(my_plots)
+    result = model.predict(my_vec)
+
+    print(f"줄거리1 예측: {result[0]}")  # → good
+    print(f"줄거리2 예측: {result[1]}")  # → bad
+
+
+# ================================
+# 실행
+# ================================
+csv_저장하기()
+df = csv_불러오기()
+df = 라벨만들기(df)
+model, vectorizer = 나이브베이즈_학습(df)
+직접예측(model, vectorizer)
+
+
+# 1. 우리 회사에서 고객의 의견을 확인하는 모델로 사용
+# 2. 특정영화를 여러 사이트 방문해서 사람들의 인지도가 어떤지 조회 분석
+# 3. 맛집       여러 사이트를 방문해서 특정 지역에서 인지도 좋은 맛집 분석
+# 4. 쇼핑... 논문 등 글자로 무언가를 파악해야할 때 사용
