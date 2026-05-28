@@ -53,7 +53,7 @@ def csv_영화리뷰():
     # ================================
     # 1. 데이터 불러오기
     # ================================
-    df = pd.read_csv("csvs/IMDB_Dataset.csv")
+    df = pd.read_csv("../csvs/IMDB_Dataset.csv")
 
     # TODO 1: 데이터 상위 5개 출력해보기
     print(df.head())

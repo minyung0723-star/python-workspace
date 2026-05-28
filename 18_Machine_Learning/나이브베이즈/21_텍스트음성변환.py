@@ -31,7 +31,7 @@ def 문장읽기():
 
 
 def 텍스트파일읽기():
-    f = open("read_me.txt", "r", encoding="utf-8")
+    f = open("../read_me.txt", "r", encoding="utf-8")
     text = f.read()
     f.close()
     print(text)
