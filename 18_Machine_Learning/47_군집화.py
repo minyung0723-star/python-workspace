@@ -13,95 +13,140 @@
 
     → 정답이 없으나 AI가 알아서 스스로 그룹 나눔
 
-간단히 비교하자
+   간단히 비교하자
 
-            차원축소               군집화               분류             회귀
-목적       컬럼 줄이기            그룹 묶기          정답 맞추기        숫자 예측
-라벨         불필요                불필요               필요              필요
-결과      압축된 데이터           그룹 번호             예측값         연속된 숫자
-예시     100컬럼 → 2컬럼       고객등급 자동분류      스팸메일판별       주가 예측
--------------------------------------------------------------------------------------
-모델       PCA, 커널PCA        K-Means, DBSCAN       SVM, KNN          선형회귀
-           LDA, LLE, NMF        계층적 군집화        로지스틱회귀      릿지 , 라쏘
-                                                    랜덤포레스트        XGBoost
+           차원축소                군집화            분류          회귀
+목적     컬럼 줄이기             그룹 묶기       정답 맞추기     숫자 예측
+라벨       불필요                 불필요             필요          필요
+결과    압축된 데이터           그룹 번호          예측값       연속된 숫자
+예시   100컬럼 → 2컬럼     고객등급 자동분류    스팸메일판별    주가 예측
+-------------------------------------------------------------------------------
+모델    PCA, 커널PCA        K-Means, DBSCAN     SVM , KNN        선형회귀
+       LDA, LLE, NMF         계층적 군집화      로지스틱회귀    릿지 , 라쏘
+                                                랜덤포레스트      XGBoost
+앙상블 - 여러 모델을 비교해보는 모델 어떤 모델이 가장 좋게 나오는가? 를 할 때 주로 사용
+
 지도 학습 - 정답이 있는 상태에서 정답 따라 모델 학습
 비지도 학습 - 정답이 없는 상태에서 진행하는 모델 학습
-예를 들어           그룹에 정답이 있나?         그냥 데이터를 보고 구분하는 것으로 정답이 없다
+예를 들어            그룹에 정답이 있나?       그냥 데이터를 보고 구분하는 것으로 정답이 없다.
+              -> 지도하는 선생님이 없다 비지도 학습
+쇼핑몰 고객 1만명
+    → 아무 정보 없이 구매패턴만 보고
+
+    그룹 A : 자주사고 많이씀(VIP)
+    그룹 B : 가끔사고 적게씀(일반)
+    그룹 C : 오래전에 사고 안옴(이탈위험)
+
+    → 정답이 없으나 AI가 알아서 스스로 그룹 나눔
 
 군집화 3가지
 1. K-Means
 - 내가 그룹 수를 직접 정함 / 중심점을 기준으로 가까운 것끼리 묶음
 - 빠르고 간단 / 가장 많이 사용
 - 그룹수를 미리 알아야 하며, 원형 데이터에만 잘 된다.
-- 예 : 고객을 3등급으로 나눠줘
+- 예 : 고객을 3등급으로 나누줘
 
 2. DBSCAN
 - 밀집된 곳 = 그룹
 - 혼자 동떨어진 데이터 = 노이즈(이상치)로 처리
 - 그룹 수 안 정해도 됨
 - 이상한 데이터는 자동 제거
-
+- 데이터가 너무 많으면 느림
+- 예 : 사기 거래 탐지, 지도에서 건물 밀집 지역 찾기
 
 3. 계층적 군집화
 - 가장 비슷한 것끼리 합쳐가며 트리(덴드로그램)구조로 시각화
 - 그룹 수 안 정해도 됨
 - 트리로 과정을 눈으로 확인 가능
 - 데이터가 많으면 매우 느림
-- 예 : 생물 분류, 언어 계통도
+- 예 : 생물 분류 , 언어 계통도
 
-K-Means
-DBSCAN
-계층적
+K-Means → 빠르게 n개로 나눠줘
+DBSCAN  → 이상한 데이터 걸러줘
+계층적  → 묶이는 과정을 보고싶다.
 
 코드 또한 그룹으로 묶거나 분석하는 형태를 주로 띈다.
 모델결과를 주로 시각화해서 표기
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import alpha
-from sklearn.datasets import make_blobs,make_moons
-from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
-
+import matplotlib.pyplot as plt # 그래프 그리는 도구
+from sklearn.datasets import make_blobs, make_moons # 가짜 연습용 데이터
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering # 3가지 그룹 묶기 모델
+# 계층적 = AgglomerativeClustering
 plt.rcParams['font.family'] = 'Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] = False
 
-fig, axes = plt.subplots(1,3,figsize=(15,4))
+# 1개의 창에 그림 3개를 나란히 배치하는 것 가로=15, 세로=4
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 fig.suptitle('군집화 3가지 비교')
 
-X,y = make_blobs(n_samples=300, centers=3, random_state=42)
+# 동글동글한 점 300개를 3덩어리로 만들기
+X, y = make_blobs(n_samples=300, centers=3, random_state=42)
 # make_blobs 동글동글한 덩어리 데이터 생성
 # n_samples = 300 데이터 300개
-# centers = 3 덩어리 3개
+# centers   =  3  덩어리 3개
+
 
 # ==========================================================
 # 1. K-Means
 # ==========================================================
-kmeans = KMeans(n_clusters=3, random_state=42)
-labels_km = kmeans.fit_predict(X)
+kmeans = KMeans(n_clusters=3, random_state=42) # 3개 그룹으로 나눠줘 AI에게 지시하는 것
+# n_clusters=3 → 3개의 그룹으로 나눠줘
+# 몇 개의 그룹으로 나눌지는 개발자가 직접 지정
+labels_km = kmeans.fit_predict(X) # AI가 데이터 보고 학습하고 바로 그룹번호 붙이기
 # fit_predict = 학습하고 바로 그룹번호 반환
-ax = axes[0]
-ax.scatter(X[:,0],X[:,1],c=labels_km,cmap='Set1',alpha=0.7)
+# 결과적으로 [0,1,2,0,1,2,1,2,0,1,1,2,...] 나온다.
+
+
+ax = axes[0] # 0번째 그래프
+# 2차원 표(행,렬) 데이터를 꺼내는 방법
+# X 데이터는 아래와 같이 생겼다.
+#      0번열     1번열
+# 0행  [1.2 ,    3.4]  ← 점 1개 (x좌표, y좌표)
+# 1행  [5.6 ,    2.1]  ← 점 1개 (x좌표, y좌표)
+# 2행  [3.3 ,    7.8]  ← 점 1개 (x좌표, y좌표)
+# X[   :   ,  0   ]
+#      ↑      ↑
+#     행     렬
+#   :    = 모든 행 (전부 다)
+#   0    = 0번 열만 (x좌표만 갖고 오겠다.
+#         모든점의  모든점의
+#         x좌표만   y좌표만
+#         뽑아줘    뽑아줘
+# 그래프에 점을 찍으려면 x,y 좌표로 하여 찍어야 하기 때문에 각 데이터 위치에 찍는 형태
+ax.scatter(X[:, 0], X[:, 1], c=labels_km, cmap='Set1', alpha=0.7)
+# 각 3그룹의 중심점을 검정색 X로 표기하겠다.
 ax.scatter(
-    kmeans.cluster_centers_[:,0],
-    kmeans.cluster_centers_[:,1],
-    c='black',marker='X',s=200, label='중심점'
-           )
+    kmeans.cluster_centers_[:, 0],  # 중심점 X좌표
+    kmeans.cluster_centers_[:, 1],  # 중심점 Y좌표
+    c='black', marker='X', s=200, label='중심점'
+)
 ax.set_title('K-Means')
 ax.legend()
-
 # ==========================================================
 # 2. DBSCAN
-# 꼬인 데이터에 강함
+# 꼬인 데이에 강함
 # make_moon 초승달 모양 2개 데이터 K-Means 으로 나눌 수 없는 없데이터
 # ==========================================================
 X_moon, _ = make_moons(n_samples=300, noise=0.1, random_state=42)
+# 초승달 모양 데이터 300개 만들기(noise=0.1 은 약간 흐트러진 느낌, 완벽한 초승달 말고
+# 약간 삐뚤삐뚤한 초승달 그리기)
+# n_samples 300 개의 초승달 데이터
+# noise=    0.1 약간의 노이즈 추가
+
 dbscan = DBSCAN(eps=0.2, min_samples=5)
+# 0.2 거리 안에 친구가 5명 이상 있어야지 그룹으로 판정
+# 4명 이하는 그룹으로 보지 않고, 이상한 데이터로 치부 삭제
 # 거리와 그룹별 인원 수는 개발자가 지정
+
+# eps=0.2       → 0.2 거리 안에 있으면 이웃으로 봄
+# min_samples=5 → 이웃이 5개 이상이면 그룹으로 인정
+# 이웃이 없으면 → -1 (노이즈, 이상치) 처리
+
 labels_db = dbscan.fit_predict(X_moon) # 초승달 데이터에 위 규칙 적용해서 그룹 번호 붙여줘
 
 ax = axes[1]
-ax.scatter(X_moon[:,0],X_moon[:,1],c=labels_db,cmap='Set1',alpha=0.7)
+ax.scatter(X_moon[:, 0], X_moon[:, 1], c=labels_db, cmap='Set1', alpha=0.7)
 ax.set_title('DBSCAN 노이즈(-1로 표기)')
 
 # ==========================================================
@@ -109,20 +154,14 @@ ax.set_title('DBSCAN 노이즈(-1로 표기)')
 # ==========================================================
 
 hc = AgglomerativeClustering(n_clusters=3)
-
+# Agglomerative = 아래에서 위로 합쳐가는 방식
+# 가장 가까운 것끼리 하나씩 합쳐서 최종 3그룹으로 만들겠다.
 # 그룹 개수는 개발자 분석가가 지정
 labels_hc = hc.fit_predict(X)
 
 ax = axes[2]
-ax.scatter(X[:,0],X[:,1],c=labels_hc,cmap='Set1',alpha=0.7)
+ax.scatter(X[:, 0], X[:, 1], c=labels_hc, cmap='Set1', alpha=0.7)
 ax.set_title('계층적 군집화')
 
 plt.tight_layout()
 plt.show()
-
-
-
-
-
-
-
