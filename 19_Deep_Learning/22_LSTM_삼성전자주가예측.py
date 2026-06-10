@@ -27,7 +27,15 @@ High     고가   보조로 가끔 사용
 Low      저가   보조로 가끔 사용
 Volume 거래량   같이 넣으면 정확도 올라간다.
 """
+"""
+미국 주식 
 
+한국 숫자 6자리 표기 .KS .KQ
+KS 대기업
+KQ 중견 중소 스타트업 기준
+
+미국 주식의 경우 환율을 계산해서 원화로 표기해야하는 번거로움 발생
+"""
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
