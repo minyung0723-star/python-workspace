@@ -6,15 +6,16 @@
 import os, json, torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-MODEL_NAME = "nlptown/bert-base-multilingual-uncased-sentiment"
+MODEL_NAME_1 = "nlptown/bert-base-multilingual-uncased-sentiment"
+MODEL_NAME_2 = "hun3359/klue-bert-base-sentiment"
 SAVE_DIR   = "saved_model"
 MAX_LEN    = 128
 
 # ── 1. 모델 + 토크나이저 다운로드 ──────────────────────
 print("모델 다운로드 중... (최초 1회 약 700MB)")
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-pt_model  = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME_2)
+pt_model  = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME_2)
 pt_model.eval()
 
 # ── 2. 동작 테스트 ─────────────────────────────────────
@@ -47,7 +48,7 @@ pt_model.save_pretrained(f"{SAVE_DIR}/pt_weights")    # 모델 가중치
 
 # Keras 메타 파일 (.keras 역할 — 설정값 보존용)
 meta = {
-    "model_name" : MODEL_NAME,
+    "model_name" : MODEL_NAME_2,
     "max_len"    : MAX_LEN,
     "format"     : "keras_wrapper",
     "id2label"   : pt_model.config.id2label,          # {"0":"1 star", ...}
